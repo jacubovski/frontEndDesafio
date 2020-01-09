@@ -1,4 +1,4 @@
-# voox-vue
+# Frontend Desafio Zoox
 
 ## Project setup
 ```

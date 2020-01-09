@@ -5,7 +5,8 @@
          <v-data-table
           :headers="headers"
           :items="estados"
-          sort-by="calories"
+          :search="search"
+          sort-by="nomes"
           class="elevation-1"
         >
           <template v-slot:top>
@@ -28,33 +29,46 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-text-field 
-                        v-model="editedItem.nome"
-                        maxlength="25"
-                        :hint="hint"
-                        label="Nome"
-                        ref="nome"
-                        ></v-text-field>
-                      </v-row>
-                      <v-row>
-                        <v-text-field 
-                        v-model="editedItem.abreviacao" 
-                        maxlength="2" 
-                        :hint="hint"
-                        label="Abreviação"
-                        ref="abreviacao"
-                        ></v-text-field>
+                        <v-col class="d-flex" cols="12" sm="12" lg="8" md="8">
+                          <v-text-field 
+                          v-model="editedItem.nome"
+                          maxlength="25"
+                          :hint="hint"
+                          label="Nome"
+                          ref="nome"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="12" sm="12" lg="4" md="4">
+                          <v-text-field 
+                          v-model="editedItem.abreviacao" 
+                          maxlength="2" 
+                          :hint="hint"
+                          label="Abreviação"
+                          ref="abreviacao"
+                          ></v-text-field>
+                        </v-col>
                       </v-row>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-                    <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
+                    <v-btn color="blue darken-1" text @click="save">{{titleButton}}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
             </v-toolbar>
+            <v-row>
+              <v-spacer></v-spacer>
+              <v-col xs="12" sm="12" md="6" lg="6">
+                <v-text-field
+                v-model="search"
+                label="Filtrar"
+                single-line
+                hide-details
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </template>
           <template v-slot:item.action="{ item }">
             <v-icon
@@ -85,6 +99,7 @@
 
 <script>
 import axios from '../plugins/axios/axios';
+import Methdos from '../mixins/methods';
 
 export default {
     data: () => ({
@@ -113,17 +128,14 @@ export default {
       formTitle () {
         return this.editedIndex === -1 ? 'Novo Estado' : 'Editar Estado'
       },
-    },
-    filters: {
-     
+      titleButton() {
+        return this.editedIndex === -1 ? 'Salvar' : 'Atualizar'
+      }
     },
     watch: {
       dialog (val) {
         val || this.close()
       },
-    },
-    created () {
-      this.initialize()
     },
     methods: {
       async initialize () {
@@ -153,13 +165,13 @@ export default {
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      async save () {
         const isValid = this.validateFields(this.editedItem);
         if (isValid) {
           if (this.editedIndex > -1) {
-            this.update(this.editedItem);
+            await this.update(this.editedItem);
           } else {
-            this.create(this.editedItem);
+            await this.create(this.editedItem);
           }
           this.close()
         }
@@ -198,6 +210,7 @@ export default {
           const response = await axios.put('/estados', {_id, nome, abreviacao});
           const { estado } = response.data;
           const [estadoAtt] = this.formatEstados([estado]);
+          this.showSnackBar('Estado Atualizado com Sucesso', 'success');
           Object.assign(this.estados[this.editedIndex], estadoAtt)
         } catch (error) {
           const { msg } = error.response.data;
@@ -232,6 +245,9 @@ export default {
           return uf;
         });
       }
+    },
+    created () {
+      this.initialize()
     },
   }
 </script>

@@ -7,7 +7,7 @@
           :headers="headers"
           :items="cidades"
           :search="search"
-          sort-by="calories"
+          sort-by="nomes"
           class="elevation-1"
         >
           <template v-slot:top>
@@ -118,6 +118,7 @@ export default {
         estadoId: '',
       },
       defaultItem: {
+        _id: '',  
         nome: '',
         estadoId: '',
       },
@@ -163,7 +164,7 @@ export default {
         }
       },
       editItem (item) {
-        this.editedIndex = this.cidades.indexOf(item)
+        this.editedIndex = this.cidades.findIndex(it => it._id === item._id)
         this.editedItem = Object.assign({}, {
           _id: item._id,
           nome: item.nome,
@@ -183,13 +184,13 @@ export default {
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      async save () {
         const isValid = this.validateFields(this.editedItem);
         if (isValid) {
           if (this.editedIndex > -1) {
-            this.update(this.editedItem);
+            await this.update(this.editedItem);
           } else {
-            this.create(this.editedItem);
+            await this.create(this.editedItem);
           }
           this.close()
         }
@@ -202,7 +203,7 @@ export default {
           return false;
         } else if(!estadoId) {
           this.hint = 'Campo Obrigatório.'
-          this.$refs.estado.focus();
+          this.$refs.estados.focus();
           return false;
         }
         else {
@@ -227,8 +228,10 @@ export default {
           const response = await axios.put('/cidades', {_id, nome, estadoId});
           const { cidade } = response.data;
           const [cidadeAtt] = this.formatCidades([cidade]);
+          this.showSnackBar('Cidade Atualizada com Sucesso', 'success');
           Object.assign(this.cidades[this.editedIndex], cidadeAtt)
         } catch (error) {
+          console.log(error)
           const { msg } = error.response.data;
           this.showSnackBar(`${msg}`, 'danger')
         }
