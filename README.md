@@ -1,4 +1,4 @@
-# voox-vue
+# Desafio Zoox
 
 ## Project setup
 ```
@@ -15,5 +15,6 @@ npm run serve
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Dados para login
+Usuario: desafio@zoox.com
+Senha: 123456
