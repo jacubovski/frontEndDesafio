@@ -99,7 +99,6 @@
 
 <script>
 import axios from '../plugins/axios/axios';
-import Methdos from '../mixins/methods';
 
 export default {
     data: () => ({
