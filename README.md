@@ -1,11 +1,22 @@
-# Frontend Desafio Zoox
+# Desafio FrontEnd - Zoox
+>### Consiste em criar uma Tela de para CRUD de Cidades e Estados, consumindo a API, também do desafio.
 
-## Project setup
-```
-npm install
-```
+# Requisitos para Instalação
+>#### 1. NodeJS 10x+
+>#### 2. NPM 6x+
 
-### Compiles and hot-reloads for development
-```
-npm start
-```
+# Instalaçao
+### Dependências 
+> $ npm install
+### Estartando a apicação para desenvolvimento
+> $ npm run serve
+### Build para Produção
+> $ npm run build
+### Parando a aplicação
+> $ Ctrl + c
+
+# Informações Importantes
+
+  Necessário logar na aplicação utilizando os seguintes dados:
+  > usuário: desafio@zoox.com
+  > senha: 123456
